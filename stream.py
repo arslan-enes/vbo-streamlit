@@ -63,36 +63,38 @@ def main():
     graph_cont = tab3.container()
     # Grafik 1
     graph_cont.header("Veri Setinin Görselleştirilmesi")
-    graph_cont.subheader("Ülkelerin Yıllar İçerisindeki Değişimlerinin Karşılaştırılması")
-    col1, col2 = graph_cont.columns(2)
-    countries_selected = col1.multiselect("Ülkeler", df.country.unique())
-    variable_select = col2.selectbox("Görselleştirilecek Değişkeni Seçiniz",
-                                     options=["lifeExp", "gdpPercap", "pop"])
-    mean_line = col2.checkbox("Ortalama Çizgisi")
-    if countries_selected:
-        fig1 = user_input_graph(df, countries_selected, variable_select, mean_line)
-        graph_cont.plotly_chart(fig1)
+    exp1 = graph_cont.expander("Ülkelerin Yıllar İçerisindeki Değişimlerinin Karşılaştırılması")
+    with exp1:
+        col1, col2 = exp1.columns(2)
+        countries_selected = col1.multiselect("Ülkeler", df.country.unique())
+        variable_select = col2.selectbox("Görselleştirilecek Değişkeni Seçiniz",
+                                         options=["lifeExp", "gdpPercap", "pop"])
+        mean_line = col2.checkbox("Ortalama Çizgisi")
+        if countries_selected:
+            fig1 = user_input_graph(df, countries_selected, variable_select, mean_line)
+            exp1.plotly_chart(fig1)
 
     # Grafik 2
-    graph_cont.subheader("Ülkelerin Yıllar İçerisinde Yaşam Beklentisi Değişikliğinin Harita Üzerinde Gösterilmesi")
-    year_select_for_map = graph_cont.slider("Yıllar ", min_value=int(df.year.min()), max_value=int(df.year.max()),
-                                            step=5)
-    fig2 = px.choropleth(df[df.year == year_select_for_map], locations="iso_alpha",
-                         color="lifeExp",
-                         range_color=(df.lifeExp.min(), df.lifeExp.max()),
-                         hover_name="country",
-                         color_continuous_scale=px.colors.sequential.Plasma,
-                         width=650, height=500)
-    graph_cont.plotly_chart(fig2)
+    exp2 = graph_cont.expander("Ülkelerin Yıllar İçerisinde Yaşam Beklentisi Değişikliğinin Harita Üzerinde Gösterilmesi")
+    with exp2:
+        year_select_for_map = graph_cont.slider("Yıllar ", min_value=int(df.year.min()), max_value=int(df.year.max()),
+                                                step=5)
+        fig2 = px.choropleth(df[df.year == year_select_for_map], locations="iso_alpha",
+                             color="lifeExp",
+                             range_color=(df.lifeExp.min(), df.lifeExp.max()),
+                             hover_name="country",
+                             color_continuous_scale=px.colors.sequential.Plasma,
+                             width=650, height=500)
+        exp2.plotly_chart(fig2)
 
     # Grafik 3
-    graph_cont.subheader("Ülkelerin Yıllar İçerisindeki Nüfus, GSMH ve Yaşam Beklentisi Değişimleri")
-
-    fig3 = px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent",
-                      animation_group='country', animation_frame="year",
-                      hover_name="country", range_x=[100, 100000], range_y=[25, 90], log_x=True, size_max=60)
-    fig3.add_hline(y=50, line_dash="dash", line_color="black")
-    graph_cont.plotly_chart(fig3)
+    exp3 = graph_cont.expander("Ülkelerin Yıllar İçerisindeki Nüfus, GSMH ve Yaşam Beklentisi Değişimleri")
+    with exp3:
+        fig3 = px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent",
+                          animation_group='country', animation_frame="year",
+                          hover_name="country", range_x=[100, 100000], range_y=[25, 90], log_x=True, size_max=60)
+        fig3.add_hline(y=50, line_dash="dash", line_color="black")
+        exp3.plotly_chart(fig3)
 
     # Modelleme
     model_cont = tab4.container()
