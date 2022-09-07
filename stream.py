@@ -77,7 +77,7 @@ def main():
     # Grafik 2
     exp2 = graph_cont.expander("Ülkelerin Yıllar İçerisinde Yaşam Beklentisi Değişikliğinin Harita Üzerinde Gösterilmesi")
     with exp2:
-        year_select_for_map = graph_cont.slider("Yıllar ", min_value=int(df.year.min()), max_value=int(df.year.max()),
+        year_select_for_map = exp2.slider("Yıllar ", min_value=int(df.year.min()), max_value=int(df.year.max()),
                                                 step=5)
         fig2 = px.choropleth(df[df.year == year_select_for_map], locations="iso_alpha",
                              color="lifeExp",
